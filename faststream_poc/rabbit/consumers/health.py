@@ -22,8 +22,9 @@ router = RabbitRouter(prefix="health_")
     ),
     health_exchange,
 )
-async def ok_health_consumer(body: HealthMessage):
-    logger.info(f"Health is ok {body.event}")
+async def ok_health_consumer(body: HealthMessage, raw_message: RabbitMessage):
+    logger.info(f"Health is ok {body}")
+    await raw_message.ack()
 
 
 @router.subscriber(
@@ -35,7 +36,7 @@ async def ok_health_consumer(body: HealthMessage):
             "x-dead-letter-exchange": health_dlx_exchange.name,
         },
     ),
-    health_exchange
+    health_exchange,
 )
 async def bad_health_consumer(
     message_body: HealthMessage,
