@@ -41,7 +41,7 @@ async def bad_health_consumer(
     message_body: HealthMessage,
     raw_message: RabbitMessage,
 ):
-    logger.error(f"Health is bad f{message_body.event}")
+    logger.error(f"Health is bad {message_body.event}")
 
     await raw_message.ack()
 

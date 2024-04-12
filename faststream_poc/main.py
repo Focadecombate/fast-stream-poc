@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.settings = settings
+    await init_db()
     await rabbit_broker.connect()
     outbox_task = asyncio.create_task(worker.main())
-    await init_db()
     yield
     await rabbit_broker.close()
     outbox_task.cancel()
